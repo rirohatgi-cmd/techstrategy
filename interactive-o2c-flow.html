@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Order-to-Cash Process Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .flow-canvas {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: auto;
+            min-height: 600px;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            min-height: 500px;
+        }
+
+        .process-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .process-node:hover rect {
+            filter: drop-shadow(0 8px 12px rgba(102, 126, 234, 0.4));
+            stroke-width: 3;
+        }
+
+        .process-node rect {
+            transition: all 0.3s ease;
+        }
+
+        .process-node.active rect {
+            stroke: #667eea !important;
+            stroke-width: 3;
+            filter: drop-shadow(0 8px 12px rgba(102, 126, 234, 0.6));
+        }
+
+        .process-node text {
+            pointer-events: none;
+        }
+
+        .arrow {
+            stroke: #cbd5e1;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+            transition: stroke 0.3s ease;
+        }
+
+        .arrow.active {
+            stroke: #667eea;
+            stroke-width: 3;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-title {
+            color: #1e293b;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .step-detail {
+            display: none;
+        }
+
+        .step-detail.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-name {
+            color: #1e293b;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .step-badge.strategic { background: #8b5cf6; }
+        .step-badge.execution { background: #0ea5e9; }
+        .step-badge.fulfillment { background: #10b981; }
+        .step-badge.collection { background: #f59e0b; }
+
+        .step-description {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .step-activities {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .activity-title {
+            color: #1e293b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+
+        .activity-item {
+            color: #475569;
+            font-size: 12px;
+            margin-bottom: 6px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .activity-item::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+        }
+
+        .step-metrics {
+            background: #f0f4ff;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .metric {
+            color: #475569;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .metric-value {
+            color: #1e293b;
+            font-weight: bold;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .control-title {
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .legend {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .legend-title {
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .flow-canvas {
+                min-height: 400px;
+            }
+        }
+
+        .demo-banner {
+            background: #dbeafe;
+            border-left: 4px solid #0ea5e9;
+            padding: 12px;
+            border-radius: 6px;
+            color: #0c4a6e;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #1e293b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .tooltip.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Interactive Order-to-Cash Process Flow</h1>
+            <p class="subtitle">Click on any process step to view details, metrics, and activities</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-title">🎮 Simulation Controls</div>
+            <div class="control-buttons">
+                <button class="btn btn-primary" onclick="simulateDeal()">📦 Simulate Deal Flow</button>
+                <button class="btn btn-secondary" onclick="resetFlow()">🔄 Reset</button>
+                <button class="btn btn-secondary" onclick="toggleMetrics()">📈 Toggle Metrics</button>
+            </div>
+            <div class="demo-banner" style="margin-top: 12px;">
+                💡 Click process steps to see details. Use buttons to simulate deals through the pipeline.
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-title">Process Categories</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8b5cf6;"></div>
+                    <span>Strategic (Lead → Quote)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #0ea5e9;"></div>
+                    <span>Execution (Contract → Order)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #10b981;"></div>
+                    <span>Fulfillment (Onboarding → Payment)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f59e0b;"></div>
+                    <span>Collection (Cash → Renewal)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="flow-canvas">
+                <svg id="flowDiagram" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#cbd5e1"/>
+                        </marker>
+                        <marker id="arrowhead-active" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#667eea"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-title">Step Details</div>
+                <div id="stepDetails">
+                    <p style="color: #64748b; font-size: 13px; text-align: center;">
+                        Click on a process step to view details
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const processes = [
+            {
+                id: 'lead',
+                name: 'Lead & Qualification',
+                category: 'strategic',
+                x: 60,
+                y: 350,
+                description: 'Identify and qualify prospects based on ICP and budget',
+                activities: [
+                    'Lead identification and scoring',
+                    'Initial discovery call',
+                    'Fit assessment',
+                    'Budget confirmation'
+                ],
+                metrics: [
+                    { label: 'Lead Quality Score', value: '7.2/10' },
+                    { label: 'Avg. Time in Stage', value: '5-7 days' },
+                    { label: 'Advancement Rate', value: '45%' }
+                ]
+            },
+            {
+                id: 'demo',
+                name: 'Demo & Evaluation',
+                category: 'strategic',
+                x: 220,
+                y: 350,
+                description: 'Product demonstration and proof of value',
+                activities: [
+                    'Personalized product demo',
+                    'Use case walkthrough',
+                    'ROI discussion',
+                    'Competitor comparison'
+                ],
+                metrics: [
+                    { label: 'Demo Duration', value: '45-60 min' },
+                    { label: 'Stakeholders Involved', value: '2-3 people' },
+                    { label: 'Advancement Rate', value: '62%' }
+                ]
+            },
+            {
+                id: 'quote',
+                name: 'Quote & Proposal',
+                category: 'strategic',
+                x: 380,
+                y: 350,
+                description: 'Generate customized pricing and proposal',
+                activities: [
+                    'Configure pricing model',
+                    'Create proposal document',
+                    'Add implementation timeline',
+                    'Define success metrics'
+                ],
+                metrics: [
+                    { label: 'Avg. Deal Size', value: '$85k ARR' },
+                    { label: 'Quote Validity', value: '30 days' },
+                    { label: 'Advancement Rate', value: '55%' }
+                ]
+            },
+            {
+                id: 'contract',
+                name: 'Contract Negotiation',
+                category: 'execution',
+                x: 540,
+                y: 350,
+                description: 'Legal review and contract finalization',
+                activities: [
+                    'Legal document review',
+                    'Terms negotiation',
+                    'Signature authority validation',
+                    'Digital signature collection'
+                ],
+                metrics: [
+                    { label: 'Avg. Negotiation Time', value: '7-10 days' },
+                    { label: 'Typical Modifications', value: '3-5 clauses' },
+                    { label: 'Advancement Rate', value: '78%' }
+                ]
+            },
+            {
+                id: 'order',
+                name: 'Order & Invoice',
+                category: 'execution',
+                x: 700,
+                y: 350,
+                description: 'Create purchase order and generate invoice',
+                activities: [
+                    'Create sales order',
+                    'Generate invoice',
+                    'Define payment terms',
+                    'Send invoice to customer'
+                ],
+                metrics: [
+                    { label: 'Invoicing Delay', value: '1-2 days' },
+                    { label: 'Payment Terms', value: 'Net 30/60' },
+                    { label: 'Advancement Rate', value: '92%' }
+                ]
+            },
+            {
+                id: 'fulfillment',
+                name: 'Fulfillment & Onboarding',
+                category: 'fulfillment',
+                x: 860,
+                y: 350,
+                description: 'Provision account and onboard customer',
+                activities: [
+                    'Account provisioning',
+                    'User creation and training',
+                    'Data migration',
+                    'Success manager assignment'
+                ],
+                metrics: [
+                    { label: 'Onboarding Duration', value: '5-10 days' },
+                    { label: 'Training Sessions', value: '2-3 sessions' },
+                    { label: 'Time to First Value', value: '3-5 days' }
+                ]
+            },
+            {
+                id: 'payment',
+                name: 'Payment & Revenue Recognition',
+                category: 'fulfillment',
+                x: 1020,
+                y: 350,
+                description: 'Collect payment and recognize revenue',
+                activities: [
+                    'Payment collection',
+                    'ASC 606 revenue recognition',
+                    'Financial reporting',
+                    'Payment confirmation'
+                ],
+                metrics: [
+                    { label: 'Payment Methods', value: 'ACH, Card, Wire' },
+                    { label: 'Collection Rate', value: '98.5%' },
+                    { label: 'Avg. Payment Lag', value: '2-3 days' }
+                ]
+            },
+            {
+                id: 'cash',
+                name: 'Cash Receipt & Booking',
+                category: 'collection',
+                x: 1160,
+                y: 350,
+                description: 'Complete cash receipt and account settlement',
+                activities: [
+                    'Cash receipt confirmation',
+                    'Account reconciliation',
+                    'Financial close',
+                    'Success milestone tracking'
+                ],
+                metrics: [
+                    { label: 'Cash Cycle Time', value: '60-90 days' },
+                    { label: 'Order to Cash', value: 'From Lead' },
+                    { label: 'Success Rate', value: '99.2%' }
+                ]
+            }
+        ];
+
+        let selectedStep = null;
+        let animatingSteps = [];
+
+        function drawFlow() {
+            const svg = document.getElementById('flowDiagram');
+
+            // Draw arrows
+            for (let i = 0; i < processes.length - 1; i++) {
+                const from = processes[i];
+                const to = processes[i + 1];
+
+                const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                arrow.setAttribute('class', 'arrow');
+                arrow.setAttribute('id', `arrow-${from.id}-${to.id}`);
+                arrow.setAttribute('x1', from.x + 70);
+                arrow.setAttribute('y1', from.y);
+                arrow.setAttribute('x2', to.x - 70);
+                arrow.setAttribute('y2', to.y);
+                svg.appendChild(arrow);
+            }
+
+            // Draw process nodes
+            processes.forEach((process, index) => {
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('class', 'process-node');
+                group.setAttribute('id', `node-${process.id}`);
+                group.onclick = () => selectStep(process.id);
+
+                const colors = {
+                    strategic: '#8b5cf6',
+                    execution: '#0ea5e9',
+                    fulfillment: '#10b981',
+                    collection: '#f59e0b'
+                };
+
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', process.x - 60);
+                rect.setAttribute('y', process.y - 40);
+                rect.setAttribute('width', '120');
+                rect.setAttribute('height', '80');
+                rect.setAttribute('rx', '8');
+                rect.setAttribute('fill', colors[process.category]);
+                rect.setAttribute('stroke', colors[process.category]);
+                rect.setAttribute('stroke-width', '2');
+                rect.setAttribute('opacity', '0.9');
+
+                const stepNum = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                stepNum.setAttribute('x', process.x);
+                stepNum.setAttribute('y', process.y - 18);
+                stepNum.setAttribute('text-anchor', 'middle');
+                stepNum.setAttribute('fill', 'white');
+                stepNum.setAttribute('font-size', '12');
+                stepNum.setAttribute('font-weight', 'bold');
+                stepNum.textContent = `Step ${index + 1}`;
+
+                const nameText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                nameText.setAttribute('x', process.x);
+                nameText.setAttribute('y', process.y + 5);
+                nameText.setAttribute('text-anchor', 'middle');
+                nameText.setAttribute('fill', 'white');
+                nameText.setAttribute('font-size', '11');
+                nameText.setAttribute('font-weight', 'bold');
+                nameText.setAttribute('word-spacing', '100vw');
+                nameText.textContent = process.name.split(' ').slice(0, 2).join(' ');
+
+                group.appendChild(rect);
+                group.appendChild(stepNum);
+                group.appendChild(nameText);
+                svg.appendChild(group);
+            });
+        }
+
+        function selectStep(stepId) {
+            selectedStep = stepId;
+
+            // Update UI
+            document.querySelectorAll('.process-node').forEach(node => {
+                node.classList.remove('active');
+            });
+            document.getElementById(`node-${stepId}`).classList.add('active');
+
+            // Update arrows
+            document.querySelectorAll('.arrow').forEach(arrow => {
+                arrow.classList.remove('active');
+                if (arrow.id.includes(stepId)) {
+                    arrow.classList.add('active');
+                }
+            });
+
+            // Show details
+            const process = processes.find(p => p.id === stepId);
+            const categoryColors = {
+                strategic: '#8b5cf6',
+                execution: '#0ea5e9',
+                fulfillment: '#10b981',
+                collection: '#f59e0b'
+            };
+
+            const categoryLabels = {
+                strategic: 'Strategic',
+                execution: 'Execution',
+                fulfillment: 'Fulfillment',
+                collection: 'Collection'
+            };
+
+            let html = `
+                <div class="step-detail active">
+                    <div class="step-name">${process.name}</div>
+                    <span class="step-badge" style="background: ${categoryColors[process.category]};">
+                        ${categoryLabels[process.category]}
+                    </span>
+                    <p class="step-description">${process.description}</p>
+
+                    <div class="step-activities">
+                        <div class="activity-title">Key Activities</div>
+                        ${process.activities.map(a => `<div class="activity-item">${a}</div>`).join('')}
+                    </div>
+
+                    <div class="step-metrics">
+                        <div class="activity-title" style="color: ${categoryColors[process.category]}; margin-bottom: 10px;">Metrics</div>
+                        ${process.metrics.map(m => `
+                            <div class="metric">
+                                <span>${m.label}</span>
+                                <span class="metric-value">${m.value}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('stepDetails').innerHTML = html;
+        }
+
+        function simulateDeal() {
+            animatingSteps = [];
+            let currentIndex = 0;
+
+            const interval = setInterval(() => {
+                if (currentIndex < processes.length) {
+                    selectStep(processes[currentIndex].id);
+                    animatingSteps.push(processes[currentIndex].id);
+                    currentIndex++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        alert('✅ Deal completed Order-to-Cash cycle!\n\nTotal cycle: 60-90 days\nKey milestones:\n• Lead to Quote: 12-15 days\n• Quote to Order: 10-14 days\n• Order to Payment: 3-5 days\n• Payment to Cash: 2-3 days');
+                    }, 500);
+                }
+            }, 800);
+        }
+
+        function resetFlow() {
+            selectedStep = null;
+            animatingSteps = [];
+            document.querySelectorAll('.process-node').forEach(node => {
+                node.classList.remove('active');
+            });
+            document.querySelectorAll('.arrow').forEach(arrow => {
+                arrow.classList.remove('active');
+            });
+            document.getElementById('stepDetails').innerHTML = `
+                <p style="color: #64748b; font-size: 13px; text-align: center;">
+                    Click on a process step to view details
+                </p>
+            `;
+        }
+
+        function toggleMetrics() {
+            const metrics = document.querySelectorAll('.step-metrics');
+            metrics.forEach(m => {
+                m.style.display = m.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // Initialize
+        drawFlow();
+    </script>
+</body>
+</html>
