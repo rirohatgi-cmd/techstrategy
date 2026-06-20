@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Practitioner Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Registration Screen -->
+        <div id="registrationScreen" class="card">
+            <h1>📝 Strategy Practitioner Quiz</h1>
+            <p class="subtitle">Test your knowledge of business process strategy and digital transformation</p>
+
+            <div id="registrationError" class="alert alert-error hidden"></div>
+
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="startQuiz()">Start Quiz</button>
+
+            <p class="subtitle" style="margin-top: 20px; text-align: center;">
+                <a href="leaderboard.html" style="color: #667eea; text-decoration: none;">View Leaderboard →</a>
+            </p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="card">
+                <div class="progress-text" id="progressText">Question 1 of 10</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+                </div>
+
+                <h2 id="questionText"></h2>
+
+                <div id="questionsContainer"></div>
+
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="flex: 1;">← Previous</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="flex: 1;">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden">
+            <div class="card">
+                <div class="result-section">
+                    <h1>✅ Quiz Completed!</h1>
+                    <p class="subtitle">Thank you for participating</p>
+
+                    <div class="score-display" id="scoreDisplay"></div>
+                    <div class="score-text" id="scoreText"></div>
+
+                    <div style="margin-top: 30px;">
+                        <p style="color: #64748b; margin-bottom: 15px;">
+                            Your responses have been recorded and you're now on the leaderboard.
+                        </p>
+                        <a href="leaderboard.html" class="btn btn-primary">View Leaderboard</a>
+                        <button class="btn btn-secondary" style="margin-left: 10px;" onclick="resetQuiz()">Take Quiz Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let participantId = null;
+        let participantName = '';
+
+        // Initialize
+        async function initialize() {
+            try {
+                const response = await fetch('/api/questions');
+                questions = await response.json();
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                alert('Failed to load quiz questions. Please refresh the page.');
+            }
+        }
+
+        async function startQuiz() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            if (!fullName || !email) {
+                showError('registrationError', 'Please enter both name and email');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showError('registrationError', 'Please enter a valid email address');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: fullName, email: email })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError('registrationError', data.error || 'Registration failed');
+                    return;
+                }
+
+                participantId = data.participantId;
+                participantName = fullName;
+                answers = {};
+
+                document.getElementById('registrationScreen').classList.add('hidden');
+                document.getElementById('quizScreen').classList.remove('hidden');
+                showQuestion();
+
+            } catch (error) {
+                showError('registrationError', 'An error occurred. Please try again.');
+            }
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.question;
+
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '<div class="options">';
+
+            for (const [key, value] of Object.entries(question.options)) {
+                const isSelected = answers[question.id] === key;
+                const optionHtml = `
+                    <label class="option ${isSelected ? 'selected' : ''}">
+                        <input type="radio" name="answer" value="${key}" ${isSelected ? 'checked' : ''}
+                               onchange="selectAnswer('${key}', ${question.id})">
+                        <span><strong>${key}.</strong> ${value}</span>
+                    </label>
+                `;
+                container.innerHTML += optionHtml;
+            }
+
+            container.innerHTML += '</div>';
+
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent =
+                `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+
+            document.getElementById('prevBtn').style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').textContent =
+                currentQuestionIndex === questions.length - 1 ? 'Submit Quiz' : 'Next →';
+        }
+
+        function selectAnswer(value, questionId) {
+            answers[questionId] = value;
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex === questions.length - 1) {
+                submitQuiz();
+            } else if (answers[questions[currentQuestionIndex].id]) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                alert('Please select an answer before proceeding');
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        async function submitQuiz() {
+            const answeredCount = Object.keys(answers).length;
+            if (answeredCount !== questions.length) {
+                alert(`Please answer all ${questions.length} questions. You've answered ${answeredCount}.`);
+                return;
+            }
+
+            const formattedAnswers = {};
+            answers.forEach((value, key) => {
+                formattedAnswers[key] = value;
+            });
+
+            try {
+                const response = await fetch('/api/submit-quiz', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        participantId: participantId,
+                        answers: formattedAnswers
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Error submitting quiz: ' + (data.error || 'Unknown error'));
+                    return;
+                }
+
+                showResults(data.score, data.total, data.percentage);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to submit quiz. Please try again.');
+            }
+        }
+
+        function showResults(score, total, percentage) {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+
+            document.getElementById('scoreDisplay').textContent = `${score}/${total}`;
+
+            let message = '';
+            if (percentage >= 80) {
+                message = 'Outstanding! You have strong process strategy knowledge.';
+            } else if (percentage >= 60) {
+                message = 'Good job! You understand the fundamentals well.';
+            } else if (percentage >= 40) {
+                message = 'Fair performance. Keep learning!';
+            } else {
+                message = 'Keep practicing to improve your score.';
+            }
+
+            document.getElementById('scoreText').textContent = `${percentage}% | ${message}`;
+        }
+
+        function resetQuiz() {
+            document.getElementById('registrationScreen').classList.remove('hidden');
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('fullName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('registrationError').classList.add('hidden');
+            currentQuestionIndex = 0;
+            answers = {};
+            participantId = null;
+            participantName = '';
+        }
+
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
+
+        // Start
+        initialize();
+    </script>
+</body>
+</html>

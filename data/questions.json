@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "question": "What is the primary goal of business process strategy?",
+    "options": {
+      "A": "Maximize profit without considering efficiency",
+      "B": "Optimize operations to align with business objectives",
+      "C": "Reduce all costs regardless of quality",
+      "D": "Increase headcount"
+    },
+    "correctAnswer": "B",
+    "category": "Strategy Fundamentals"
+  },
+  {
+    "id": 2,
+    "question": "Which of the following best describes the 'Order-to-Cash' process?",
+    "options": {
+      "A": "Only the sales cycle",
+      "B": "From quote generation to order fulfillment",
+      "C": "From initial lead through to payment and cash receipt",
+      "D": "Only the billing stage"
+    },
+    "correctAnswer": "C",
+    "category": "Business Processes"
+  },
+  {
+    "id": 3,
+    "question": "What is a Key Performance Indicator (KPI)?",
+    "options": {
+      "A": "A random metric tracked monthly",
+      "B": "A measurable value that shows how effectively objectives are being achieved",
+      "C": "The total number of employees",
+      "D": "Annual budget allocation"
+    },
+    "correctAnswer": "B",
+    "category": "Metrics & Analytics"
+  },
+  {
+    "id": 4,
+    "question": "In SaaS business models, what does ARR stand for?",
+    "options": {
+      "A": "Annual Revenue Recognition",
+      "B": "Average Revenue Ratio",
+      "C": "Annual Recurring Revenue",
+      "D": "Adjusted Return Rate"
+    },
+    "correctAnswer": "C",
+    "category": "SaaS Business"
+  },
+  {
+    "id": 5,
+    "question": "What is the primary benefit of process mapping?",
+    "options": {
+      "A": "Creating documentation for compliance only",
+      "B": "Visualizing and understanding process flows to identify inefficiencies",
+      "C": "Increasing the number of steps in a process",
+      "D": "Adding more roles to the organization"
+    },
+    "correctAnswer": "B",
+    "category": "Process Improvement"
+  },
+  {
+    "id": 6,
+    "question": "Which stage typically has the highest cost impact in a customer lifecycle?",
+    "options": {
+      "A": "Lead generation",
+      "B": "Onboarding and customer acquisition",
+      "C": "Support and renewal",
+      "D": "Contract negotiation"
+    },
+    "correctAnswer": "B",
+    "category": "Customer Lifecycle"
+  },
+  {
+    "id": 7,
+    "question": "What does 'Lead-to-Cash' pipeline indicate?",
+    "options": {
+      "A": "Only the time to close a deal",
+      "B": "The entire customer journey from initial interest to revenue collection",
+      "C": "The marketing funnel conversion rate",
+      "D": "Sales representative performance"
+    },
+    "correctAnswer": "B",
+    "category": "Sales Process"
+  },
+  {
+    "id": 8,
+    "question": "In process optimization, what is 'bottleneck analysis'?",
+    "options": {
+      "A": "Identifying constraints that limit process efficiency",
+      "B": "Analyzing customer feedback",
+      "C": "Measuring employee satisfaction",
+      "D": "Reviewing annual budgets"
+    },
+    "correctAnswer": "A",
+    "category": "Process Improvement"
+  },
+  {
+    "id": 9,
+    "question": "What is the primary purpose of process automation?",
+    "options": {
+      "A": "To replace all human workers",
+      "B": "To reduce manual tasks and improve efficiency",
+      "C": "To increase process complexity",
+      "D": "To reduce accountability"
+    },
+    "correctAnswer": "B",
+    "category": "Technology & Automation"
+  },
+  {
+    "id": 10,
+    "question": "Which metric measures how long it takes to complete the entire sales cycle?",
+    "options": {
+      "A": "Conversion rate",
+      "B": "Sales cycle length",
+      "C": "Win rate",
+      "D": "Pipeline velocity"
+    },
+    "correctAnswer": "B",
+    "category": "Sales Metrics"
+  }
+]

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Leaderboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Public View / Login Screen -->
+        <div id="loginScreen" class="card">
+            <h1>🏆 Quiz Leaderboard</h1>
+            <p class="subtitle">View leaderboard or access admin dashboard with PIN</p>
+
+            <div id="loginError" class="alert alert-error hidden"></div>
+
+            <div style="margin-bottom: 30px;">
+                <h2 style="margin-bottom: 20px;">Quick Stats</h2>
+                <div class="summary-grid" id="summaryStats" style="display: none;">
+                    <div class="summary-card">
+                        <div class="summary-label">Total Participants</div>
+                        <div class="summary-value" id="totalParticipants">-</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Completed</div>
+                        <div class="summary-value" id="totalCompleted">-</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Average Score</div>
+                        <div class="summary-value" id="avgScore">-</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Highest Score</div>
+                        <div class="summary-value" id="highestScore">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 style="margin-bottom: 20px;">Admin Access</h2>
+                <p style="color: #64748b; margin-bottom: 15px;">Enter admin PIN to see detailed analytics and participant responses</p>
+                <div class="form-group">
+                    <input type="password" id="adminPin" placeholder="Enter admin PIN" onkeypress="if(event.key==='Enter') loginAdmin()">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="loginAdmin()">Login as Admin</button>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="quiz.html" style="color: #667eea; text-decoration: none;">← Back to Quiz</a>
+            </div>
+        </div>
+
+        <!-- Leaderboard Display -->
+        <div id="leaderboardScreen" class="hidden">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <div>
+                        <h1>🏆 Leaderboard</h1>
+                        <p class="subtitle" id="viewType">Public Rankings</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                        <a href="quiz.html" class="btn btn-secondary" style="margin-left: 10px; text-decoration: none;">Take Quiz</a>
+                    </div>
+                </div>
+
+                <!-- Admin Summary -->
+                <div id="adminSummary" class="hidden">
+                    <div class="summary-grid" style="margin-bottom: 30px;">
+                        <div class="summary-card">
+                            <div class="summary-label">Total Participants</div>
+                            <div class="summary-value" id="adminTotalParticipants">-</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Completed Quizzes</div>
+                            <div class="summary-value" id="adminTotalCompleted">-</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Average Score</div>
+                            <div class="summary-value" id="adminAvgScore">-</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Score Range</div>
+                            <div class="summary-value" id="adminScoreRange">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search/Filter -->
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="searchInput" placeholder="Search by name or email..." onkeyup="filterLeaderboard()"
+                           style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px;">
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div id="leaderboardContainer" style="overflow-x: auto;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading leaderboard...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participant Details (Admin Only) -->
+        <div id="participantDetailsScreen" class="hidden">
+            <div class="card">
+                <button class="btn btn-secondary" onclick="backToLeaderboard()" style="margin-bottom: 20px;">← Back to Leaderboard</button>
+
+                <h1 id="participantName"></h1>
+                <p class="subtitle" id="participantEmail"></p>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Score</div>
+                        <div class="summary-value" id="participantScore">-</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Percentage</div>
+                        <div class="summary-value" id="participantPercentage">-</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Rank</div>
+                        <div class="summary-value" id="participantRank">-</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Submitted</div>
+                        <div class="summary-value" id="participantDate">-</div>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 30px; margin-bottom: 20px;">Answer Details</h2>
+                <div id="answerDetailsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allLeaderboardData = [];
+        let isAdmin = false;
+        let adminPin = null;
+
+        // Initialize
+        async function initialize() {
+            loadPublicLeaderboard();
+        }
+
+        async function loadPublicLeaderboard() {
+            try {
+                const response = await fetch('/api/leaderboard-summary');
+                const summary = await response.json();
+
+                document.getElementById('totalParticipants').textContent = summary.totalParticipants || 0;
+                document.getElementById('totalCompleted').textContent = summary.totalCompleted || 0;
+                document.getElementById('avgScore').textContent = summary.avgScore ? summary.avgScore.toFixed(1) + '%' : '-';
+                document.getElementById('highestScore').textContent = summary.highestScore ? summary.highestScore.toFixed(1) + '%' : '-';
+                document.getElementById('summaryStats').style.display = 'grid';
+
+            } catch (error) {
+                console.error('Error loading summary:', error);
+            }
+        }
+
+        function loginAdmin() {
+            const pin = document.getElementById('adminPin').value.trim();
+
+            if (!pin) {
+                showLoginError('Please enter admin PIN');
+                return;
+            }
+
+            adminPin = pin;
+            loadLeaderboard(pin);
+        }
+
+        async function loadLeaderboard(pin) {
+            try {
+                const response = await fetch(`/api/leaderboard?pin=${encodeURIComponent(pin)}`);
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showLoginError('Invalid PIN');
+                    } else {
+                        showLoginError('Failed to load leaderboard');
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                allLeaderboardData = data;
+                isAdmin = true;
+
+                displayLeaderboard(data);
+                loadAdminSummary(pin);
+
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('leaderboardScreen').classList.remove('hidden');
+                document.getElementById('adminSummary').classList.remove('hidden');
+                document.getElementById('viewType').textContent = 'Admin View';
+
+            } catch (error) {
+                console.error('Error:', error);
+                showLoginError('Error loading leaderboard');
+            }
+        }
+
+        async function loadAdminSummary(pin) {
+            try {
+                const response = await fetch(`/api/leaderboard-summary?pin=${encodeURIComponent(pin)}`);
+                const summary = await response.json();
+
+                document.getElementById('adminTotalParticipants').textContent = summary.totalParticipants || 0;
+                document.getElementById('adminTotalCompleted').textContent = summary.totalCompleted || 0;
+                document.getElementById('adminAvgScore').textContent = summary.avgScore ? summary.avgScore.toFixed(1) + '%' : '-';
+
+                const range = summary.lowestScore && summary.highestScore
+                    ? `${summary.lowestScore.toFixed(1)}% - ${summary.highestScore.toFixed(1)}%`
+                    : '-';
+                document.getElementById('adminScoreRange').textContent = range;
+
+            } catch (error) {
+                console.error('Error loading admin summary:', error);
+            }
+        }
+
+        function displayLeaderboard(data) {
+            let html = '<table class="leaderboard-table"><thead><tr>';
+            html += '<th>Rank</th><th>Name</th><th>Email</th><th>Score</th><th>Percentage</th><th>Submitted</th>';
+            if (isAdmin) html += '<th>Action</th>';
+            html += '</tr></thead><tbody>';
+
+            data.forEach((entry, index) => {
+                const date = new Date(entry.completedAt).toLocaleDateString();
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+
+                html += `<tr>
+                    <td><span class="rank-badge ${rankClass}">${entry.rank}</span></td>
+                    <td><strong>${entry.name}</strong></td>
+                    <td>${entry.email}</td>
+                    <td>${entry.score}/${entry.totalQuestions}</td>
+                    <td><strong>${entry.percentage.toFixed(1)}%</strong></td>
+                    <td>${date}</td>`;
+
+                if (isAdmin) {
+                    html += `<td><button class="btn btn-secondary btn-small" onclick="viewParticipantDetails('${entry.id}')">View</button></td>`;
+                }
+
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+
+            document.getElementById('leaderboardContainer').innerHTML = html;
+        }
+
+        function filterLeaderboard() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allLeaderboardData.filter(entry =>
+                entry.name.toLowerCase().includes(searchTerm) ||
+                entry.email.toLowerCase().includes(searchTerm)
+            );
+            displayLeaderboard(filtered);
+        }
+
+        async function viewParticipantDetails(participantId) {
+            try {
+                const response = await fetch(`/api/participant/${participantId}?pin=${encodeURIComponent(adminPin)}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Error loading participant details');
+                    return;
+                }
+
+                const participant = data.participant;
+                const entry = allLeaderboardData.find(e => e.id === participantId);
+
+                document.getElementById('participantName').textContent = participant.name;
+                document.getElementById('participantEmail').textContent = participant.email;
+                document.getElementById('participantScore').textContent = entry.score + '/' + entry.totalQuestions;
+                document.getElementById('participantPercentage').textContent = entry.percentage.toFixed(1) + '%';
+                document.getElementById('participantRank').textContent = entry.rank;
+                document.getElementById('participantDate').textContent = new Date(entry.completedAt).toLocaleString();
+
+                // Note: Due to SQLite JSON limitations, showing summary instead of detailed answers
+                let answersHtml = '<p style="color: #64748b;">Score: ' + entry.score + '/' + entry.totalQuestions + ' (' + entry.percentage.toFixed(1) + '%)</p>';
+                document.getElementById('answerDetailsContainer').innerHTML = answersHtml;
+
+                document.getElementById('leaderboardScreen').classList.add('hidden');
+                document.getElementById('participantDetailsScreen').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error loading participant details');
+            }
+        }
+
+        function backToLeaderboard() {
+            document.getElementById('participantDetailsScreen').classList.add('hidden');
+            document.getElementById('leaderboardScreen').classList.remove('hidden');
+        }
+
+        function logout() {
+            isAdmin = false;
+            adminPin = null;
+            allLeaderboardData = [];
+            document.getElementById('adminPin').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('leaderboardScreen').classList.add('hidden');
+            document.getElementById('participantDetailsScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            loadPublicLeaderboard();
+        }
+
+        function showLoginError(message) {
+            const errorEl = document.getElementById('loginError');
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
+
+        // Initialize
+        initialize();
+    </script>
+</body>
+</html>
