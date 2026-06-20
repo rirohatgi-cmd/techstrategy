@@ -1,0 +1,258 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6d28d9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-size="36" font-weight="bold" text-anchor="middle" fill="#1e293b">
+    Strategy Practitioners + Claude Code
+  </text>
+  <text x="600" y="70" font-size="16" text-anchor="middle" fill="#64748b">
+    Defining Interactive Business Process Flows
+  </text>
+
+  <!-- LEFT SIDE: STRATEGY PRACTITIONER -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="120" width="250" height="320" rx="12" fill="url(#gradPurple)" opacity="0.95"/>
+    <text x="155" y="160" font-size="20" font-weight="bold" text-anchor="middle" fill="white">
+      Strategy Practitioner
+    </text>
+
+    <!-- Icons and text for practitioner activities -->
+    <circle cx="80" cy="210" r="4" fill="white"/>
+    <text x="100" y="215" font-size="13" fill="white">Define business objectives</text>
+
+    <circle cx="80" cy="245" r="4" fill="white"/>
+    <text x="100" y="250" font-size="13" fill="white">Map process stages</text>
+
+    <circle cx="80" cy="280" r="4" fill="white"/>
+    <text x="100" y="285" font-size="13" fill="white">Identify key metrics</text>
+
+    <circle cx="80" cy="315" r="4" fill="white"/>
+    <text x="100" y="320" font-size="13" fill="white">Specify interactions</text>
+
+    <circle cx="80" cy="350" r="4" fill="white"/>
+    <text x="100" y="355" font-size="13" fill="white">Set business rules</text>
+
+    <circle cx="80" cy="385" r="4" fill="white"/>
+    <text x="100" y="390" font-size="13" fill="white">Define workflows</text>
+  </g>
+
+  <!-- MIDDLE: CLAUDE CODE CAPABILITIES -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="120" width="500" height="320" rx="12" fill="url(#gradBlue)" opacity="0.95"/>
+    <text x="600" y="160" font-size="20" font-weight="bold" text-anchor="middle" fill="white">
+      Claude Code Powers Interactive Flows
+    </text>
+
+    <!-- Top row of capabilities -->
+    <rect x="370" y="190" width="140" height="80" rx="8" fill="white" fill-opacity="0.15"/>
+    <text x="440" y="215" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Parse Process</text>
+    <text x="440" y="235" font-size="11" text-anchor="middle" fill="white">Natural language</text>
+    <text x="440" y="250" font-size="11" text-anchor="middle" fill="white">process definitions</text>
+
+    <rect x="530" y="190" width="140" height="80" rx="8" fill="white" fill-opacity="0.15"/>
+    <text x="600" y="215" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Code Generation</text>
+    <text x="600" y="235" font-size="11" text-anchor="middle" fill="white">Workflow logic &amp;</text>
+    <text x="600" y="250" font-size="11" text-anchor="middle" fill="white">state management</text>
+
+    <rect x="690" y="190" width="140" height="80" rx="8" fill="white" fill-opacity="0.15"/>
+    <text x="760" y="215" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Build UI</text>
+    <text x="760" y="235" font-size="11" text-anchor="middle" fill="white">Interactive dashboards</text>
+    <text x="760" y="250" font-size="11" text-anchor="middle" fill="white">&amp; visualizations</text>
+
+    <!-- Bottom row of capabilities -->
+    <rect x="370" y="290" width="140" height="80" rx="8" fill="white" fill-opacity="0.15"/>
+    <text x="440" y="315" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Real-time Analytics</text>
+    <text x="440" y="335" font-size="11" text-anchor="middle" fill="white">KPI tracking &amp;</text>
+    <text x="440" y="350" font-size="11" text-anchor="middle" fill="white">performance data</text>
+
+    <rect x="530" y="290" width="140" height="80" rx="8" fill="white" fill-opacity="0.15"/>
+    <text x="600" y="315" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Test &amp; Refine</text>
+    <text x="600" y="335" font-size="11" text-anchor="middle" fill="white">Iterate flows based</text>
+    <text x="600" y="350" font-size="11" text-anchor="middle" fill="white">on feedback</text>
+
+    <rect x="690" y="290" width="140" height="80" rx="8" fill="white" fill-opacity="0.15"/>
+    <text x="760" y="315" font-size="12" font-weight="bold" text-anchor="middle" fill="white">Deploy &amp; Monitor</text>
+    <text x="760" y="335" font-size="11" text-anchor="middle" fill="white">Live workflow</text>
+    <text x="760" y="350" font-size="11" text-anchor="middle" fill="white">management</text>
+  </g>
+
+  <!-- RIGHT SIDE: EXAMPLE OUTPUT -->
+  <g filter="url(#shadow)">
+    <rect x="920" y="120" width="250" height="320" rx="12" fill="url(#gradGreen)" opacity="0.95"/>
+    <text x="1045" y="160" font-size="20" font-weight="bold" text-anchor="middle" fill="white">
+      Interactive Flows
+    </text>
+    <text x="1045" y="185" font-size="13" text-anchor="middle" fill="white" opacity="0.9">
+      Example: Lead to Cash
+    </text>
+
+    <!-- Lead to Cash flow diagram -->
+    <rect x="945" y="210" width="50" height="35" rx="4" fill="white" fill-opacity="0.2" stroke="white" stroke-width="2"/>
+    <text x="970" y="233" font-size="11" font-weight="bold" text-anchor="middle" fill="white">Lead</text>
+
+    <line x1="1000" y1="227" x2="1025" y2="227" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+    <rect x="1030" y="210" width="50" height="35" rx="4" fill="white" fill-opacity="0.2" stroke="white" stroke-width="2"/>
+    <text x="1055" y="233" font-size="11" font-weight="bold" text-anchor="middle" fill="white">Qualify</text>
+
+    <line x1="990" y1="250" x2="990" y2="275" stroke="white" stroke-width="2"/>
+    <line x1="990" y1="275" x2="1050" y2="275" stroke="white" stroke-width="2"/>
+    <line x1="1050" y1="275" x2="1050" y2="250" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+    <rect x="1030" y="280" width="50" height="35" rx="4" fill="white" fill-opacity="0.2" stroke="white" stroke-width="2"/>
+    <text x="1055" y="303" font-size="11" font-weight="bold" text-anchor="middle" fill="white">Propose</text>
+
+    <line x1="1055" y1="315" x2="1055" y2="340" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+    <rect x="1030" y="345" width="50" height="35" rx="4" fill="white" fill-opacity="0.2" stroke="white" stroke-width="2"/>
+    <text x="1055" y="368" font-size="11" font-weight="bold" text-anchor="middle" fill="white">Close</text>
+
+    <line x1="1055" y1="380" x2="1055" y2="405" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+    <rect x="1030" y="410" width="50" height="35" rx="4" fill="white" fill-opacity="0.2" stroke="white" stroke-width="2"/>
+    <text x="1055" y="433" font-size="11" font-weight="bold" text-anchor="middle" fill="white">Cash</text>
+
+    <!-- Arrow marker definition -->
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="white"/>
+      </marker>
+    </defs>
+  </g>
+
+  <!-- BOTTOM: KEY BENEFITS -->
+  <g>
+    <text x="600" y="490" font-size="18" font-weight="bold" text-anchor="middle" fill="#1e293b">
+      Key Benefits
+    </text>
+
+    <g filter="url(#shadow)">
+      <rect x="50" y="520" width="200" height="240" rx="10" fill="#f0f4f8" stroke="#cbd5e1" stroke-width="1"/>
+      <text x="150" y="555" font-size="13" font-weight="bold" text-anchor="middle" fill="#1e293b">
+        🚀 Speed
+      </text>
+      <text x="150" y="600" font-size="12" text-anchor="middle" fill="#475569" word-spacing="2">
+        From concept to
+      </text>
+      <text x="150" y="620" font-size="12" text-anchor="middle" fill="#475569">
+        working prototype
+      </text>
+      <text x="150" y="640" font-size="12" text-anchor="middle" fill="#475569">
+        in hours, not weeks
+      </text>
+      <text x="150" y="690" font-size="11" font-style="italic" text-anchor="middle" fill="#64748b">
+        Rapid iteration cycles
+      </text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="300" y="520" width="200" height="240" rx="10" fill="#f0f4f8" stroke="#cbd5e1" stroke-width="1"/>
+      <text x="400" y="555" font-size="13" font-weight="bold" text-anchor="middle" fill="#1e293b">
+        🎯 Precision
+      </text>
+      <text x="400" y="600" font-size="12" text-anchor="middle" fill="#475569">
+        Translate business
+      </text>
+      <text x="400" y="620" font-size="12" text-anchor="middle" fill="#475569">
+        logic directly into
+      </text>
+      <text x="400" y="640" font-size="12" text-anchor="middle" fill="#475569">
+        executable workflows
+      </text>
+      <text x="400" y="690" font-size="11" font-style="italic" text-anchor="middle" fill="#64748b">
+        No translation errors
+      </text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="550" y="520" width="200" height="240" rx="10" fill="#f0f4f8" stroke="#cbd5e1" stroke-width="1"/>
+      <text x="650" y="555" font-size="13" font-weight="bold" text-anchor="middle" fill="#1e293b">
+        💡 Intelligence
+      </text>
+      <text x="650" y="600" font-size="12" text-anchor="middle" fill="#475569">
+        AI-powered insights
+      </text>
+      <text x="650" y="620" font-size="12" text-anchor="middle" fill="#475569">
+        on bottlenecks &amp;
+      </text>
+      <text x="650" y="640" font-size="12" text-anchor="middle" fill="#475569">
+        optimization points
+      </text>
+      <text x="650" y="690" font-size="11" font-style="italic" text-anchor="middle" fill="#64748b">
+        Smarter process design
+      </text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="800" y="520" width="200" height="240" rx="10" fill="#f0f4f8" stroke="#cbd5e1" stroke-width="1"/>
+      <text x="900" y="555" font-size="13" font-weight="bold" text-anchor="middle" fill="#1e293b">
+        🔄 Flexibility
+      </text>
+      <text x="900" y="600" font-size="12" text-anchor="middle" fill="#475569">
+        Easily adapt flows as
+      </text>
+      <text x="900" y="620" font-size="12" text-anchor="middle" fill="#475569">
+        business needs evolve
+      </text>
+      <text x="900" y="640" font-size="12" text-anchor="middle" fill="#475569">
+        and feedback arrives
+      </text>
+      <text x="900" y="690" font-size="11" font-style="italic" text-anchor="middle" fill="#64748b">
+        Continuous improvement
+      </text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1050" y="520" width="120" height="240" rx="10" fill="#f0f4f8" stroke="#cbd5e1" stroke-width="1"/>
+      <text x="1110" y="555" font-size="13" font-weight="bold" text-anchor="middle" fill="#1e293b">
+        📊 Visibility
+      </text>
+      <text x="1110" y="600" font-size="12" text-anchor="middle" fill="#475569">
+        Real-time dashboards
+      </text>
+      <text x="1110" y="620" font-size="12" text-anchor="middle" fill="#475569">
+        showing process health
+      </text>
+      <text x="1110" y="640" font-size="12" text-anchor="middle" fill="#475569">
+        &amp; metrics
+      </text>
+      <text x="1110" y="690" font-size="11" font-style="italic" text-anchor="middle" fill="#64748b">
+        Data-driven decisions
+      </text>
+    </g>
+  </g>
+
+  <!-- ARROWS showing flow direction -->
+  <defs>
+    <marker id="arrow-right" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <line x1="285" y1="280" x2="345" y2="280" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow-right)"/>
+  <line x1="855" y1="280" x2="915" y2="280" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow-right)"/>
+
+  <!-- Footer -->
+  <text x="600" y="785" font-size="12" text-anchor="middle" fill="#94a3b8">
+    Transform strategic thinking into executable, measurable business processes
+  </text>
+</svg>
