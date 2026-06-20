@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFiber Tranche 2 - Interactive Timeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .status-banner {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            border-radius: 6px;
+            color: #92400e;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-phase {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+        }
+
+        .timeline-phase.phase-1 { border-left-color: #8b5cf6; }
+        .timeline-phase.phase-2 { border-left-color: #0ea5e9; }
+        .timeline-phase.phase-3 { border-left-color: #10b981; }
+        .timeline-phase.phase-4 { border-left-color: #f59e0b; }
+
+        .phase-title {
+            color: #1e293b;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .phase-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .phase-detail {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .phase-milestones {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .milestone {
+            padding: 8px 0;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .milestone::before {
+            content: "→ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Status Badge Styles */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-on-track { background: #dcfce7; color: #166534; }
+        .status-at-risk { background: #fed7aa; color: #9a3412; }
+        .status-blocked { background: #fee2e2; color: #991b1b; }
+        .status-completed { background: #cffafe; color: #164e63; }
+
+        /* SIT Testing Styles */
+        .sit-weeks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sit-week {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sit-week:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .sit-week.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .week-title {
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .week-dates {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .test-count {
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .sit-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .details-title {
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-box-title {
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-box-content {
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Modules & Integrations */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .module-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .module-name {
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .module-tests {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-label {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .test-number {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Key Dates */
+        .key-dates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .date-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #667eea;
+        }
+
+        .date-label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .date-value {
+            color: #1e293b;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .date-change {
+            color: #ef4444;
+            font-size: 12px;
+        }
+
+        .date-change.positive {
+            color: #10b981;
+        }
+
+        /* Risk Summary */
+        .risk-summary {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .risk-category {
+            margin-bottom: 20px;
+        }
+
+        .risk-category-title {
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .risk-item {
+            padding: 10px;
+            background: #f8fafc;
+            border-left: 3px solid #667eea;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .risk-item.at-risk {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .risk-item.blocked {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .sit-weeks, .modules-grid, .key-dates {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 GFiber Tranche 2 - Interactive Project Timeline</h1>
+            <p class="subtitle">System Integration Testing (SIT) & Project Phase Timeline</p>
+            <div class="status-banner">
+                ⚠️ <strong>Project Status:</strong> Draft timeline with 4-week delay from original target (6/15 SIT start pushed to 6/22; go-live extended from 10/2 to 10/31)
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">📅 Overview</button>
+            <button class="tab-btn" onclick="switchTab('sit-testing')">🧪 SIT Testing</button>
+            <button class="tab-btn" onclick="switchTab('phases')">🔄 Project Phases</button>
+            <button class="tab-btn" onclick="switchTab('modules')">📦 Modules & Integrations</button>
+            <button class="tab-btn" onclick="switchTab('risks')">⚠️ Status & Risks</button>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div id="overview" class="tab-content active">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">Project Overview & Key Milestones</h2>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #1e293b; margin-bottom: 15px;">Key Dates Summary</h3>
+                <div class="key-dates">
+                    <div class="date-card">
+                        <div class="date-label">Original SIT Start</div>
+                        <div class="date-value">June 15, 2026</div>
+                        <div class="date-change">1 week delay</div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">Actual SIT Start</div>
+                        <div class="date-value">June 22, 2026</div>
+                        <div class="date-change">Reason: PII data scrambling</div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">Original SIT End</div>
+                        <div class="date-value">July 24, 2026</div>
+                        <div class="date-change">1 week extension</div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">Actual SIT End</div>
+                        <div class="date-value">July 31, 2026</div>
+                        <div class="date-change">6 weeks actual (8 weeks planned)</div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">Original Go-Live</div>
+                        <div class="date-value">October 2, 2026</div>
+                        <div class="date-change">29-day delay</div>
+                    </div>
+                    <div class="date-card">
+                        <div class="date-label">Target Go-Live</div>
+                        <div class="date-value">October 31, 2026</div>
+                        <div class="date-change">4-week extension</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px;">
+                <h3 style="color: #1e293b; margin-bottom: 15px;">Project Delay Summary</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="detail-box">
+                        <div class="detail-box-title">SIT Delay</div>
+                        <div class="detail-box-content">
+                            <strong>+1 Week</strong><br/>
+                            From June 15 to June 22<br/>
+                            Reason: PII data scrambling
+                        </div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">SIT Extension</div>
+                        <div class="detail-box-content">
+                            <strong>+1 Week</strong><br/>
+                            From July 24 to July 31<br/>
+                            Reason: Test data delays
+                        </div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">UAT Extension</div>
+                        <div class="detail-box-content">
+                            <strong>+3 Weeks</strong><br/>
+                            Additional UAT time needed<br/>
+                            Extended until Nov 2
+                        </div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">Total Go-Live Delay</div>
+                        <div class="detail-box-content">
+                            <strong>+4 Weeks (29 Days)</strong><br/>
+                            October 2 → October 31<br/>
+                            +1 week SIT, +3 weeks UAT
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIT TESTING TAB -->
+        <div id="sit-testing" class="tab-content">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">System Integration Testing (SIT) Schedule</h2>
+
+            <div style="background: #f0f4ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
+                <p style="color: #1e293b; font-size: 14px;">
+                    <strong>SIT Timeline:</strong> 6 weeks (June 22 - July 31, 2026) for Workday pilot scope<br/>
+                    <strong>Total Test Cases:</strong> 140+ functional module tests + 310+ integration tests
+                </p>
+            </div>
+
+            <h3 style="color: #1e293b; margin: 20px 0 15px; font-size: 16px;">Weekly SIT Testing Schedule</h3>
+            <div class="sit-weeks">
+                <div class="sit-week" onclick="showSITDetails('week1')">
+                    <div class="week-title">Week 1</div>
+                    <div class="week-dates">June 22-26, 2026</div>
+                    <div class="test-count">Initial Testing Phase</div>
+                </div>
+                <div class="sit-week" onclick="showSITDetails('week2')">
+                    <div class="week-title">Week 2</div>
+                    <div class="week-dates">June 29 - July 3</div>
+                    <div class="test-count">Coupa Expense In Scope</div>
+                </div>
+                <div class="sit-week" onclick="showSITDetails('week3')">
+                    <div class="week-title">Week 3</div>
+                    <div class="week-dates">July 6-10</div>
+                    <div class="test-count">Data Transformation</div>
+                </div>
+                <div class="sit-week" onclick="showSITDetails('week4')">
+                    <div class="week-title">Week 4</div>
+                    <div class="week-dates">July 13-17</div>
+                    <div class="test-count">Mid-cycle Testing</div>
+                </div>
+                <div class="sit-week" onclick="showSITDetails('week5')">
+                    <div class="week-title">Week 5</div>
+                    <div class="week-dates">July 20-24</div>
+                    <div class="test-count">UAT Data Load Prep</div>
+                </div>
+                <div class="sit-week" onclick="showSITDetails('week6')">
+                    <div class="week-title">Week 6</div>
+                    <div class="week-dates">July 27-31</div>
+                    <div class="test-count">Final Testing</div>
+                </div>
+            </div>
+
+            <div id="sit-details-section" style="display: none; margin-top: 30px;">
+                <div class="sit-details">
+                    <div class="details-title" id="sit-details-title">Week 1 Testing Details</div>
+                    <div class="details-grid" id="sit-details-content"></div>
+                </div>
+            </div>
+
+            <h3 style="color: #1e293b; margin: 30px 0 15px; font-size: 16px;">Functional Modules Under Test</h3>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-name">WD Core HCM</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">28</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD R & O</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">24</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD Core Comp</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">18</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD Adv Comp</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">26</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD L&D</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">20</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Performance Mgmt</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">19</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD Security</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">26</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Help Desk</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">24</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">LOA</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">19</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: #1e293b; margin: 30px 0 15px; font-size: 16px;">Key Integrations Under Test</h3>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-name">SAP > WD</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">42</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD > Docusign</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">23</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD > Okta</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">23</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD > Emtrain *</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">63*</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">WD > Metlife *</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">60*</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">ADP > SAP</div>
+                    <div class="module-tests">
+                        <span class="test-label">Test Cases</span>
+                        <span class="test-number">15</span>
+                    </div>
+                </div>
+            </div>
+            <p style="color: #64748b; font-size: 12px; margin-top: 15px;">
+                * Estimated test counts - integrations still being built, subject to change
+            </p>
+        </div>
+
+        <!-- PHASES TAB -->
+        <div id="phases" class="tab-content">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">Project Phases & Timeline</h2>
+
+            <div class="timeline-phase phase-1">
+                <div class="phase-title">🔵 Phase 1: Workday (Core + Integrations)</div>
+                <span class="status-badge status-on-track">On Track</span>
+                <div class="phase-info">
+                    <div class="phase-detail">
+                        <div class="detail-label">Design Phase</div>
+                        <div class="detail-value">1/26 - 2/23</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">Core Build (8 wks)</div>
+                        <div class="detail-value">2/23 - 4/20</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">INT Build (16 wks)</div>
+                        <div class="detail-value">1/26 - 6/12</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">SIT (6 wks)</div>
+                        <div class="detail-value">6/22 - 7/31</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">UAT (6 wks + 3 ext)</div>
+                        <div class="detail-value">7/27 - 11/2</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">Cutover (4 wks)</div>
+                        <div class="detail-value">10/5 - 11/2</div>
+                    </div>
+                </div>
+                <div class="phase-milestones" style="margin-top: 15px;">
+                    <div class="milestone">WD Tenant Build concurrent during build phase</div>
+                    <div class="milestone">Data transformation & load for UAT: 7/6 - 7/24</div>
+                    <div class="milestone">Hypercare (6 weeks): Post go-live support</div>
+                </div>
+            </div>
+
+            <div class="timeline-phase phase-2">
+                <div class="phase-title">🔵 Phase 2: SAP Integrations & Coupa FTE</div>
+                <span class="status-badge status-at-risk">At Risk</span>
+                <div class="phase-info">
+                    <div class="phase-detail">
+                        <div class="detail-label">INT Build (16 wks)</div>
+                        <div class="detail-value">1/26 - 6/12</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">SIT (6 wks)</div>
+                        <div class="detail-value">6/12 - 7/24</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">UAT (6 wks + 3 ext)</div>
+                        <div class="detail-value">8/3 - 11/2</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">Cutover (4 wks)</div>
+                        <div class="detail-value">10/5 - 11/2</div>
+                    </div>
+                </div>
+                <div class="phase-milestones" style="margin-top: 15px;">
+                    <div class="milestone">MC/Data loads: Per timeline</div>
+                    <div class="milestone">Dependent on Workday Phase completion</div>
+                </div>
+            </div>
+
+            <div class="timeline-phase phase-3">
+                <div class="phase-title">🟢 Phase 3: Coupa Expense (Core + Integrations)</div>
+                <span class="status-badge status-at-risk">At Risk</span>
+                <div class="phase-info">
+                    <div class="phase-detail">
+                        <div class="detail-label">Design Phase</div>
+                        <div class="detail-value">3/16</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">Build (5 wks)</div>
+                        <div class="detail-value">4/10 - 5/15</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">INT Build (13 wks)</div>
+                        <div class="detail-value">1/26 - 6/12</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">SIT (5 wks)</div>
+                        <div class="detail-value">6/29 - 7/31</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">UAT (6 wks + 3 ext)</div>
+                        <div class="detail-value">8/3 - 11/2</div>
+                    </div>
+                </div>
+                <div class="phase-milestones" style="margin-top: 15px;">
+                    <div class="milestone">Data extraction: 6/1</div>
+                    <div class="milestone">Data transformation & load: 6/1 - 6/12</div>
+                    <div class="milestone">SIT started on 6/1 for pilot scope (2-week extension)</div>
+                </div>
+            </div>
+
+            <div class="timeline-phase phase-4">
+                <div class="phase-title">🟠 Phase 4: Coupa CCW (TVC)</div>
+                <span class="status-badge status-at-risk">At Risk</span>
+                <div class="phase-info">
+                    <div class="phase-detail">
+                        <div class="detail-label">Design Phase</div>
+                        <div class="detail-value">3/2 - 3/20</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">INT Build (13 wks)</div>
+                        <div class="detail-value">1/26 - 6/12</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">Pilot Go-Live</div>
+                        <div class="detail-value">7/18 - 7/19</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">SIT (6 wks)</div>
+                        <div class="detail-value">8/3 - 10/2</div>
+                    </div>
+                    <div class="phase-detail">
+                        <div class="detail-label">UAT (6 wks + 3 ext)</div>
+                        <div class="detail-value">8/3 - 11/2</div>
+                    </div>
+                </div>
+                <div class="phase-milestones" style="margin-top: 15px;">
+                    <div class="milestone">CCW SIT started 6/8 for functional testing</div>
+                    <div class="milestone">CCW > Okta and WD INTs follow WD SIT timelines</div>
+                    <div class="milestone">ADP tenant refresh: 7/27 - 8/7 (2 weeks)</div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                <h3 style="color: #1e293b; margin-bottom: 15px;">Key Phase Information</h3>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 3px solid #667eea;">
+                    <p style="color: #475569; font-size: 13px; margin-bottom: 10px;">
+                        <strong>Note 1:</strong> SAP (cost center, ADP > SAP) and Coupa P2P > WD INT will follow WD SIT timelines
+                    </p>
+                    <p style="color: #475569; font-size: 13px; margin-bottom: 10px;">
+                        <strong>Note 2:</strong> Coupa Expense > ADP INT testing is not part of pilot scope and will be available for SIT week of 6/29
+                    </p>
+                    <p style="color: #475569; font-size: 13px;">
+                        <strong>Note 3:</strong> ADP Pay Compare in UAT tenant (Duration to be confirmed)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULES & INTEGRATIONS TAB -->
+        <div id="modules" class="tab-content">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">Systems & Integration Overview</h2>
+
+            <h3 style="color: #1e293b; margin: 20px 0 15px; font-size: 16px;">Systems Involved</h3>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-name">Workday</div>
+                    <div class="module-tests">
+                        <span class="test-label">9 Modules</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">SAP</div>
+                    <div class="module-tests">
+                        <span class="test-label">ERP</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Coupa</div>
+                    <div class="module-tests">
+                        <span class="test-label">P2P + Expense</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">ADP</div>
+                    <div class="module-tests">
+                        <span class="test-label">Payroll</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Okta</div>
+                    <div class="module-tests">
+                        <span class="test-label">SSO/IAM</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Docusign</div>
+                    <div class="module-tests">
+                        <span class="test-label">eSignature</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: #1e293b; margin: 30px 0 15px; font-size: 16px;">Other Integrated Systems</h3>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-name">LinkedIn</div>
+                    <div class="module-tests">
+                        <span class="test-label">Recruiting</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Coursera</div>
+                    <div class="module-tests">
+                        <span class="test-label">Learning</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Emtrain</div>
+                    <div class="module-tests">
+                        <span class="test-label">Compliance</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Metlife</div>
+                    <div class="module-tests">
+                        <span class="test-label">Benefits</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">Equifax</div>
+                    <div class="module-tests">
+                        <span class="test-label">Background Check</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-name">GSuite</div>
+                    <div class="module-tests">
+                        <span class="test-label">Productivity</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: #1e293b; margin: 30px 0 15px; font-size: 16px;">All 14+ Integrations Summary</h3>
+            <div style="background: white; padding: 20px; border-radius: 8px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Docusign</div>
+                        <div class="detail-box-content">23 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Okta SSO</div>
+                        <div class="detail-box-content">23 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">SAP > WD</div>
+                        <div class="detail-box-content">42 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Coupa P2P</div>
+                        <div class="detail-box-content">5 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > LinkedIn</div>
+                        <div class="detail-box-content">16 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Coursera</div>
+                        <div class="detail-box-content">9 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Equifax</div>
+                        <div class="detail-box-content">3 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Metlife *</div>
+                        <div class="detail-box-content">60 Test Cases*</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > Emtrain *</div>
+                        <div class="detail-box-content">63 Test Cases*</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">ADP > SAP</div>
+                        <div class="detail-box-content">15 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > GSuite</div>
+                        <div class="detail-box-content">11 Test Cases</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-box-title">WD > ADP</div>
+                        <div class="detail-box-content">18 Test Cases</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RISKS & STATUS TAB -->
+        <div id="risks" class="tab-content">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">Project Status & Risk Assessment</h2>
+
+            <div class="risk-summary">
+                <div class="risk-category">
+                    <div class="risk-category-title">🟢 On Track</div>
+                    <div class="risk-item">Core Workday build framework established</div>
+                    <div class="risk-item">Major timeline structure in place</div>
+                    <div class="risk-item">Multiple workstreams proceeding in parallel</div>
+                    <div class="risk-item">Phase 1 (Workday) design and build progressing</div>
+                </div>
+
+                <div class="risk-category">
+                    <div class="risk-category-title">🟠 At Risk</div>
+                    <div class="risk-item at-risk">SIT delayed 1 week due to PII data scrambling (6/15 → 6/22)</div>
+                    <div class="risk-item at-risk">Test case volumes still estimated and subject to change</div>
+                    <div class="risk-item at-risk">Several integrations still in build phase (*marked items)</div>
+                    <div class="risk-item at-risk">Test data delays received from Wells Fargo causing SIT extension</div>
+                    <div class="risk-item at-risk">Fin location code for expense > SAP INT still in build</div>
+                    <div class="risk-item at-risk">Multiple phase dependencies creating schedule risk</div>
+                </div>
+
+                <div class="risk-category">
+                    <div class="risk-category-title">🔴 Blocked</div>
+                    <div class="risk-item blocked">ADP Pay Compare UAT tenant duration not yet confirmed</div>
+                    <div class="risk-item blocked">Fin location code still in development (blocks expense > SAP testing)</div>
+                    <div class="risk-item blocked">Full integration test counts pending build completion</div>
+                </div>
+
+                <div class="risk-category">
+                    <div class="risk-category-title">✅ Completed/In Progress</div>
+                    <div class="risk-item">CCW SIT functional testing started (6/8)</div>
+                    <div class="risk-item">Coupa Expense pilot scope SIT started (6/1)</div>
+                    <div class="risk-item">Pilot go-live scheduled for CCW (7/18-7/19)</div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                <h3 style="color: #1e293b; margin-bottom: 15px;">Critical Dependencies & Constraints</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 4px solid #8b5cf6;">
+                        <p style="color: #1e293b; font-weight: bold; margin-bottom: 5px;">Constraint 1: SAP & Coupa P2P</p>
+                        <p style="color: #475569; font-size: 13px;">SAP (cost center, ADP > SAP) and Coupa P2P > WD INT will follow WD SIT timelines</p>
+                    </div>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 4px solid #0ea5e9;">
+                        <p style="color: #1e293b; font-weight: bold; margin-bottom: 5px;">Constraint 2: Coupa Expense ADP</p>
+                        <p style="color: #475569; font-size: 13px;">Coupa Expense > ADP INT testing not part of pilot scope, available for SIT week of 6/29</p>
+                    </div>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 4px solid #10b981;">
+                        <p style="color: #1e293b; font-weight: bold; margin-bottom: 5px;">Constraint 3: CCW Integration Timing</p>
+                        <p style="color: #475569; font-size: 13px;">CCW > Okta and WD INTs to follow WD SIT timelines (started 6/8)</p>
+                    </div>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                        <p style="color: #1e293b; font-weight: bold; margin-bottom: 5px;">Constraint 4: Data Dependencies</p>
+                        <p style="color: #475569; font-size: 13px;">SIT extended 2 weeks for fin location code and Wells Fargo test data delays</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                <h3 style="color: #1e293b; margin-bottom: 15px;">Schedule Impact Analysis</h3>
+                <div style="background: #fef3c7; border: 1px solid #fcd34d; padding: 15px; border-radius: 6px;">
+                    <p style="color: #92400e; margin-bottom: 10px;">
+                        <strong>Overall Schedule Impact:</strong> Extension of go-live date from October 2 to October 31 results in <strong>4 additional weeks</strong>:
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px;">
+                        <div style="background: white; padding: 10px; border-radius: 4px;">
+                            <div style="font-size: 12px; color: #92400e;">SIT Extension</div>
+                            <div style="font-size: 16px; font-weight: bold; color: #92400e;">+1 Week</div>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 4px;">
+                            <div style="font-size: 12px; color: #92400e;">UAT Extension</div>
+                            <div style="font-size: 16px; font-weight: bold; color: #92400e;">+3 Weeks</div>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 4px;">
+                            <div style="font-size: 12px; color: #92400e;">Total Delay</div>
+                            <div style="font-size: 16px; font-weight: bold; color: #92400e;">29 Days</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function showSITDetails(week) {
+            const detailsSection = document.getElementById('sit-details-section');
+            const detailsTitle = document.getElementById('sit-details-title');
+            const detailsContent = document.getElementById('sit-details-content');
+
+            const sitWeekDetails = {
+                week1: {
+                    title: 'Week 1 - Initial Testing Phase (June 22-26)',
+                    details: [
+                        { label: 'Focus Areas', content: 'WD Core HCM, R&O, Security, Help Desk initial testing' },
+                        { label: 'Key Activities', content: 'Test environment setup, baseline testing, integration validation' },
+                        { label: 'Test Count', content: 'Initial test case execution begins' },
+                        { label: 'Milestones', content: 'Environment readiness, initial test runs' }
+                    ]
+                },
+                week2: {
+                    title: 'Week 2 - Coupa Expense in Scope (June 29 - July 3)',
+                    details: [
+                        { label: 'Focus Areas', content: 'Coupa Expense testing begins, Workday module testing continues' },
+                        { label: 'Key Activities', content: 'Coupa Expense functional and integration testing' },
+                        { label: 'Test Count', content: 'Expanded test scope with Coupa modules' },
+                        { label: 'Milestones', content: 'Coupa Expense SIT commencement' }
+                    ]
+                },
+                week3: {
+                    title: 'Week 3 - Data Transformation (July 6-10)',
+                    details: [
+                        { label: 'Focus Areas', content: 'Data transformation and UAT data load preparation' },
+                        { label: 'Key Activities', content: 'SIT continues, UAT data extraction and transformation' },
+                        { label: 'Test Count', content: 'Continued comprehensive test execution' },
+                        { label: 'Milestones', content: 'Data transformation in progress for UAT' }
+                    ]
+                },
+                week4: {
+                    title: 'Week 4 - Mid-Cycle Testing (July 13-17)',
+                    details: [
+                        { label: 'Focus Areas', content: 'Mid-cycle validation, integration testing progress' },
+                        { label: 'Key Activities', content: 'Comprehensive module and integration validation' },
+                        { label: 'Test Count', content: 'Mid-point assessment of test execution' },
+                        { label: 'Milestones', content: 'Mid-cycle status review and adjustments' }
+                    ]
+                },
+                week5: {
+                    title: 'Week 5 - UAT Data Load Prep (July 20-24)',
+                    details: [
+                        { label: 'Focus Areas', content: 'Final SIT testing, UAT data load readiness' },
+                        { label: 'Key Activities', content: 'Complete remaining SIT tests, finalize UAT data' },
+                        { label: 'Test Count', content: 'Approach final test completion for SIT scope' },
+                        { label: 'Milestones', content: 'UAT data load completion, SIT near conclusion' }
+                    ]
+                },
+                week6: {
+                    title: 'Week 6 - Final Testing (July 27-31)',
+                    details: [
+                        { label: 'Focus Areas', content: 'Final validation, SIT closure, UAT handoff' },
+                        { label: 'Key Activities', content: 'Final test executions, defect resolution, UAT readiness' },
+                        { label: 'Test Count', content: 'Completion of SIT test execution' },
+                        { label: 'Milestones', content: 'SIT completion, readiness for UAT launch (7/27)' }
+                    ]
+                }
+            };
+
+            const weekData = sitWeekDetails[week];
+            detailsTitle.textContent = weekData.title;
+            detailsContent.innerHTML = weekData.details
+                .map(d => `
+                    <div class="detail-box">
+                        <div class="detail-box-title">${d.label}</div>
+                        <div class="detail-box-content">${d.content}</div>
+                    </div>
+                `)
+                .join('');
+
+            detailsSection.style.display = 'block';
+            detailsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

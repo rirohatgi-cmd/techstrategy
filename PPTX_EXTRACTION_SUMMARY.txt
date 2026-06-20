@@ -1,0 +1,331 @@
+================================================================================
+GFIBER TRANCHE 2 DAILY STATUS REPORT - COMPLETE EXTRACTION
+Document Type: PowerPoint Presentation (DRAFT)
+Total Slides: 3
+================================================================================
+
+================================================================================
+SLIDE 1: TIMELINE: SIT TESTING PLAN | WORKDAY
+================================================================================
+
+SLIDE CONTENT:
+This slide presents a detailed testing schedule/Gantt chart for Workday System Integration Testing (SIT) covering a 6-week period with test case volumes for functional modules and integrations.
+
+KEY INFORMATION FROM SLIDE 1:
+
+TESTING SCHEDULE OVERVIEW:
+- Testing Period: Week 1 through Week 6
+- Week 1 Dates: 6/22 - 6/26 (June 22-26, 2026)
+- Week 2 Dates: 6/29 - 7/3 (June 29 - July 3, 2026)
+- Week 3 Dates: 7/6 - 7/10 (July 6-10, 2026)
+- Week 4 Dates: 7/13 - 7/17 (July 13-17, 2026)
+- Week 5 Dates: 7/20 - 7/24 (July 20-24, 2026)
+- Week 6 Dates: 7/27 - 7/31 (July 27-31, 2026)
+
+FUNCTIONAL MODULES UNDER TEST (with test case volumes):
+1. WD Core HCM (incl. Configs, transaction) - 28 test cases
+2. WD R & O (incl. Configs, transaction) - 24 test cases
+3. WD Core Comp (incl. Configs, transaction) - 18 test cases
+4. WD Adv Comp (incl. Configs) - 26 test cases
+5. WD L&D (incl. Configs, transaction) - 20 test cases
+6. Performance Mgmt. (incl. Configs) - 19 test cases (appears in multiple weeks)
+7. WD Security - 26 test cases
+8. Help Desk (incl. Configs, transaction) - 24 test cases
+9. LOA (incl. Configs, transaction) - 19 test cases
+
+INTEGRATIONS UNDER TEST (with test case volumes):
+1. SAP > WD - INT1506 - 42 test cases
+2. WD > Docusign - INT0022, 23, 1502, 1503, 1504 - 23 test cases
+3. WD > Okta - INT1521, 1526, TVC SSO* - 23 test cases
+4. CCW > WD - INT0991* - 18 test cases
+5. WD > LinkedIn Job Req & learning - INT1509, 22, 23* - 16 test cases
+6. WD > Coupa P2P - INT0972* - 5 test cases
+7. WD > Equifax - INT0999, INT1000* - 3 test cases
+8. WD > Coursera - INT007, 008 - 9 test cases
+9. WD > Sequoia - INT1004 - 4 test cases
+10. WD > ADP (comp, OTP) - INT0030, INT1529 - 18 test cases
+11. ADP > SAP - 15 test cases
+12. WD > GSuite - INT1507, 1508* - 11 test cases
+
+OTHER TESTING CATEGORIES:
+- Learning: 20 test cases
+- Job Req: 19 test cases
+- NDA, Comp: 13 test cases
+- Offer letter: 18 test cases
+
+TOTAL TEST CASES:
+- Functional module TCs: 69 (plus 69 duplicated entry)
+- Integration TCs: 69 (plus variations)
+- Total volume appears subject to change
+
+KEY METRICS:
+- Multiple test case counts tracked across different weeks
+- Volume of test cases subject to change (as noted in legend)
+- Test counts range from 3 to 73 for various test scenarios across weeks
+
+
+================================================================================
+SLIDE 2: TIMELINE: SIT TESTING PLAN | WORKDAY (CONTINUED)
+================================================================================
+
+SLIDE CONTENT:
+Continuation of the SIT testing timeline covering additional integrations and testing scenarios for the final weeks.
+
+ADDITIONAL INTEGRATIONS (continuing from Slide 1):
+1. WD > Emtrain - INT1524, INT1525* - estimated 63 test cases
+2. WD > Metlife - INT1511, INT1512* - estimated 60 test cases
+3. WD > Career Site - INT1528* - 5 test cases
+4. GCP Error Handling - INT1527 - 5 test cases
+5. E2E Testing (Apply-hire-retire) - 3 test cases
+6. SAP Upgrade Regression* - 3 test cases
+
+IMPORTANT NOTE FROM SLIDE 2:
+"*Estimated test count as integrations are being built/FUT'd and hence the test count is subject to change"
+"1 SAP E2E"
+
+TOTAL TEST CASES FOR SLIDE 2 INTEGRATIONS:
+- Range: 81 functional module test cases
+- Range: 69 integration test cases
+- 81 and 49 total counts noted
+- 48, 28, 28, 19, 17 counts for various testing phases
+
+KEY METRICS:
+- Functional module TCs: 63-81
+- Integration TCs: 60-69
+- Test counts are ESTIMATED and subject to change
+- Integrations still being built/FUT (Full Unit Tested)
+
+
+================================================================================
+SLIDE 3: PROJECT TIMELINE & MILESTONES
+================================================================================
+
+SLIDE TITLE & KEY STATEMENT:
+"SIT start pushed to 6/22 from 6/15 (week 0 was planned to start on 6/8) due to PII data scrambling. To accommodate delayed SIT start, SIT end date has been pushed by 1 week from 7/24 to 7/31"
+
+PROJECT PHASES & TIMELINE OVERVIEW:
+
+PHASE 1: WORKDAY (CORE + INTEGRATIONS)
+- Design Phase: 1/26 - 2/23 (Start: 1/26, End: 2/23)
+- Design End: 3/2, 3/16
+- Core Build (8 weeks): 2/23 - starts design phase
+- INT Build (16 weeks): 1/26 startup
+- INT Build completion: 6/12
+- Build phase: 4/13 - 5/15, with further build activity 4/10-4/20
+- SIT (8 weeks - pilot scope): 6/22 - 7/31 (NOTE: PUSHED FROM 6/15)
+  - Original SIT end: 7/24
+  - New SIT end: 7/31 (pushed 1 week)
+  - Total SIT duration: 6 weeks actual (originally 8 weeks pilot)
+- SIT dates span: 6/22 through 7/31
+- Data transformation & load for UAT: 7/6 - 7/24
+- WD Tenant Build: concurrent during build phase
+- UAT (6 weeks): 7/27 - (appears to continue into August-September)
+- UAT Extension (3 weeks): additional duration noted
+- Cutover (4 weeks): final phase before go-live
+- Hypercare (6 weeks): post-go-live support
+- Go-Live Milestone: 10/31
+
+PHASE 2: SAP INTEGRATIONS & COUPA USER (FTE) INTEGRATION
+- INT Build (16 weeks): 1/26 startup, 6/12 completion
+- Design Phase: 2/23
+- Build phase: 3/2, 3/20, 4/27
+- Core Build timeline: 4/13, 5/15
+- SIT (6 weeks): 6/12 through 7/24
+- MC/Data loads: specific timeline included
+- UAT (6 weeks): 8/3 - 9/14 - 10/2
+- UAT Extension (3 weeks): 10/2 - 10/5 extending to 11/2
+- Cutover (4 weeks): 10/5 - 11/2
+- Hypercare (6 weeks): 10/31 - 12/12
+- Go-Live Milestone: 10/31
+
+PHASE 3: COUPA EXPENSE (CORE + INTEGRATIONS)
+- INT Build (13 weeks): 6/12 - 6/29
+- Design phase: 3/16
+- Build (5 weeks): 4/10, 4/24, 6/5
+- SIT (5 weeks): 6/29 - 7/31
+- Data extraction: 6/1
+- Data transformation & load: 6/1 - 6/12
+- UAT (6 weeks): 8/3 - 9/14 - 10/2
+- UAT Extension (3 weeks): 10/2 - 10/5 - 11/2
+- SAP Upgrade: concurrent activity
+- Cutover (4 weeks): 10/5 - 11/2
+- Hypercare (6 weeks): 10/31 - 12/12
+- Go-Live Milestone: 10/31
+
+PHASE 4: COUPA CCW (TVC)
+- Design phase: 3/2, 3/20
+- INT Build (13 weeks): 6/12, 6/29
+- Build phase: 4/27, 5/22
+- Pilot go-live (6 weeks): 7/18 - 7/19
+- SIT (6 weeks): 8/3 - 9/14 - 10/2
+- Data transformation & load: 7/6, 7/13
+- ADP tenant refresh (2 weeks): 7/27 - 8/7
+- CCW > Okta integration testing: parallel to other timelines
+- UAT (6 weeks): 8/3 - 9/14 - 10/2
+- UAT Extension (3 weeks): 10/5 - 11/2
+- Cutover (4 weeks): 10/5 - 11/2
+- Hypercare (6 weeks): 10/31 - 12/12
+- Go-Live Milestone: 10/31
+
+SPECIAL NOTES & CONSTRAINTS:
+
+Note 1: "SAP (cost center, ADP > SAP) and Coupa P2P > WD INT will follow WD SIT timelines"
+
+Note 2: "Coupa Expense > ADP INT testing is not a part of pilot scope and will be made available for SIT in wk of 6/29"
+
+Note 3: "SIT for pilot scope started on 6/1. SIT extended by 2 weeks to accommodate for fin location code (in build for expense > SAP INT) and delays in receiving test data from Wells Fargo"
+
+Note 4: "CCW SIT started on 6/8 for functional testing. CCW > Okta and WD INTs to follow WD SIT timelines"
+
+Note 5: "ADP Pay Compare in UAT tenant (Duration to be confirmed)"
+
+OVERALL SCHEDULE IMPACT SUMMARY:
+"Overall: The extension of go-live date from 10/2 to 10/31 results in 4 additional weeks:
++3 weeks for UAT
++1 week for SIT"
+
+DRAFT STATUS: Document marked as "DRAFT"
+TIMELINE STATUS: "Draft timeline for 10/31 Go-Live"
+
+KEY DATES & MILESTONES SUMMARY:
+- SIT Start (original): 6/15
+- SIT Start (pushed to): 6/22 (1 week delay due to PII data scrambling)
+- SIT Week 0 Original Plan Start: 6/8
+- SIT End (original): 7/24
+- SIT End (new): 7/31 (1 week extension)
+- Pilot Go-Live: 7/18-7/19 (CCW/Coupa)
+- Go-Live (Draft Target): 10/31
+- Go-Live (Original target): 10/2
+- Go-Live Delay: 29 days (4 weeks) extension
+
+STATUS INFORMATION EXTRACTED:
+- AT RISK: SIT start delayed due to PII data scrambling
+- AT RISK: Test case volumes still estimated and subject to change
+- AT RISK: Some integrations still being built (marked with *)
+- AT RISK: Test data delays from Wells Fargo causing SIT extension
+- BLOCKED: ADP Pay Compare UAT tenant duration not yet confirmed
+- BLOCKED: Fin location code still in build for expense > SAP integration
+- ON TRACK: Major phase timeline framework established
+- DELAYED: Overall project pushed by 4 weeks (SIT +1 week, UAT +3 weeks)
+
+KEY METRICS SUMMARY:
+1. Total Workday Functional Test Cases: 28, 24, 18, 26, 20, 19, 26, 24, 19 (totaling ~204)
+2. Total Integration Test Cases: 42, 23, 23, 18, 16, 5, 3, 9, 4, 18, 15, 11, 63, 60 (totaling ~310+)
+3. Total E2E and Regression: 3 test cases (E2E) + 3 test cases (SAP Upgrade)
+4. SIT Duration: 8 weeks pilot scope (6/22-7/31)
+5. Coupa Expense SIT: 5 weeks (6/29-7/31)
+6. CCW SIT: 6 weeks (8/3-10/2)
+7. Typical phase duration: Design 2-4 weeks, Build 5-16 weeks, SIT 5-8 weeks, UAT 6 weeks, Cutover 2-4 weeks, Hypercare 6 weeks
+8. Number of modules/integrations: 9 functional modules, 14+ integrations planned
+
+DELAYS LOGGED:
+- SIT delayed 1 week (6/8 → 6/22)
+- SIT end extended 1 week (7/24 → 7/31)
+- Overall go-live pushed 4 weeks (10/2 → 10/31)
+- Reasons: PII data scrambling, test data delays from Wells Fargo, fin location code in build
+
+================================================================================
+COMPREHENSIVE SUMMARY BY REQUEST CATEGORIES
+================================================================================
+
+1. SLIDE TITLES & NUMBERS:
+   Slide 1: Timeline: SIT Testing Plan | Workday
+   Slide 2: Timeline: SIT Testing Plan | Workday (Continued)
+   Slide 3: Project Timeline & Milestones (no explicit title shown, but contains timeline diagram and notes)
+
+2. ALL TEXT, BULLET POINTS & KEY INFORMATION:
+   [See detailed sections above for each slide]
+
+3. DATES, MILESTONES, PHASES & TIMELINE INFORMATION:
+   Key Dates:
+   - SIT Start (Original): June 15, 2026
+   - SIT Start (Actual): June 22, 2026 (pushed 1 week)
+   - SIT End (Original): July 24, 2026
+   - SIT End (Actual): July 31, 2026 (pushed 1 week)
+   - Go-Live (Original): October 2, 2026
+   - Go-Live (Current Target): October 31, 2026 (pushed 29 days)
+
+   Key Phases:
+   - Design Phase: January 26 - March 16, 2026
+   - Build/Core Build: 5-16 weeks duration (Jan 26 - June 12)
+   - SIT: 5-8 weeks (June 1 or 22 - July 31)
+   - UAT: 6 weeks + 3 week extension (July 27 - November 2)
+   - Cutover: 2-4 weeks (Sept 7 - November 2)
+   - Hypercare: 6 weeks (Oct 5 - Dec 12)
+   - Pilot Go-Live (CCW): July 18-19, 2026
+
+4. STATUS INFORMATION:
+   On Track:
+   - Core Workday build framework established
+   - Major timeline structure in place
+   - Multiple workstreams proceeding in parallel
+
+   At Risk:
+   - SIT delayed due to PII data scrambling issues
+   - Test case volumes still estimated and subject to change
+   - Several integrations still in build phase (marked with *)
+   - Test data delays received from Wells Fargo
+
+   Blocked:
+   - ADP Pay Compare UAT tenant duration not yet confirmed
+   - Fin location code for expense > SAP integration still in build
+   - Full integration test counts pending build completion
+
+   Completed/Noted:
+   - CCW SIT functional testing started (6/8)
+   - Coupa Expense pilot scope SIT started (6/1)
+   - Pilot go-live scheduled for CCW (7/18-7/19)
+
+5. KEY METRICS & NUMBERS:
+   Test Case Volumes:
+   - WD Core HCM: 28 TCs
+   - WD R & O: 24 TCs
+   - WD Core Comp: 18 TCs
+   - WD Adv Comp: 26 TCs
+   - WD L&D: 20 TCs
+   - Performance Mgmt: 19 TCs
+   - WD Security: 26 TCs
+   - Help Desk: 24 TCs
+   - LOA: 19 TCs
+   - SAP > WD (INT1506): 42 TCs
+   - WD > Docusign: 23 TCs
+   - WD > Okta: 23 TCs
+   - WD > Emtrain: 63 TCs (estimated)
+   - WD > Metlife: 60 TCs (estimated)
+   - Total Functional Module TCs: ~69-81
+   - Total Integration TCs: ~69-81
+   - Estimated total TCs for full scope: 138-162+ (subject to change)
+
+   Timeline Duration Metrics:
+   - SIT pushed: 1 week delay
+   - UAT extended: +3 weeks
+   - Total project delay: +4 weeks (29 days)
+   - Design phase: 2-3 weeks
+   - Build phase: 5-16 weeks
+   - SIT phase: 5-8 weeks
+   - UAT phase: 6 weeks standard + 3 weeks extension = 9 weeks
+   - Cutover: 2-4 weeks
+   - Hypercare: 6 weeks
+
+   Systems/Modules Involved:
+   - 9 Workday functional modules
+   - 14+ Workday integrations
+   - SAP
+   - ADP
+   - Coupa (2 instances: Expense and CCW)
+   - Docusign
+   - Okta
+   - Equifax
+   - Coursera
+   - Sequoia
+   - LinkedIn
+   - Emtrain
+   - Metlife
+   - Career Site
+   - GSuite
+   - Coupa P2P
+
+DOCUMENT STATUS: DRAFT
+PROJECT STATUS: Go-live date extended to October 31, 2026 (4-week delay from original 10/2 target)
+
+================================================================================
